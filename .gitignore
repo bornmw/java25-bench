@@ -7,4 +7,4 @@ target/
 mvnw
 mvnw.cmd
 .java-version
-.DS_Store
+.DS_Store.mvn/wrapper/

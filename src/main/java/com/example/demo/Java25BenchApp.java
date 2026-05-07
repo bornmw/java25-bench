@@ -4,11 +4,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.security.web.SecurityFilterChain;
+import static org.springframework.security.config.Customizer.withDefaults;
 
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
@@ -30,6 +34,18 @@ public class Java25BenchApp {
     @Bean
     public KeepAlive keepAlive(DataHolder dataHolder) {
         return new KeepAlive(dataHolder);
+    }
+}
+
+@Configuration
+class SecurityConfig {
+    @Bean
+    public SecurityFilterChain filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .csrf(csrf -> csrf.disable())
+            .formLogin(withDefaults());
+        return http.build();
     }
 }
 
@@ -148,4 +164,84 @@ class KeepAlive {
     @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void stayAlive() {
     }
+}
+
+@Entity
+class DummyEntity1 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
+}
+
+@Entity
+class DummyEntity2 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
+}
+
+@Entity
+class DummyEntity3 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
+}
+
+@Entity
+class DummyEntity4 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
+}
+
+@Entity
+class DummyEntity5 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
+}
+
+@Entity
+class DummyEntity6 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
+}
+
+@Entity
+class DummyEntity7 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
+}
+
+@Entity
+class DummyEntity8 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
+}
+
+@Entity
+class DummyEntity9 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
+}
+
+@Entity
+class DummyEntity10 {
+    @Id private Long id;
+    private String field1;
+    private Integer field2;
+    private BigDecimal field3;
 }
