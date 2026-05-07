@@ -1,0 +1,10 @@
+target/
+*.jar
+*.aot
+*.class
+*.log
+*.tmp
+mvnw
+mvnw.cmd
+.java-version
+.DS_Store
