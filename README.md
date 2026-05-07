@@ -6,6 +6,8 @@ Benchmark suite for measuring Java 25 performance features:
 - **Compact Object Headers (JEP 450)**: Reduces per-object memory overhead
 - **AOT Cache (Project Leyden)**: Pre-compiled code caching for faster startup
 
+Built by MiniMax M2.5 with prompting from Gemini Pro. Prompt is at the end of this readme.
+
 ## Project Structure
 
 ```
