@@ -1,11 +1,5 @@
 # Java 25 Performance Benchmark Suite
 
-Original prompt for this benchmark suite:
-
-> Please build a Java 25 performance benchmarking suite from scratch to measure Compact Object Headers (JEP 450) and AOT Cache (Project Leyden). Generate three files: pom.xml, Java25BenchApp.java, and run_benchmarks.sh.
-
----
-
 ## Project Overview
 
 Benchmark suite for measuring Java 25 performance features:
@@ -111,3 +105,47 @@ The benchmark simulates a heavy enterprise Spring Boot service:
 ## License
 
 MIT
+
+---
+
+## Original Prompt
+
+> Please build a Java 25 performance benchmarking suite from scratch to measure Compact Object Headers (JEP 450) and AOT Cache (Project Leyden). Generate three files: pom.xml, Java25BenchApp.java, and run_benchmarks.sh.
+>
+> 1. Project Weight (pom.xml)
+>
+>     Framework: Spring Boot 3.4+.
+>
+>     Dependencies: Add the following to simulate a heavy enterprise classpath: spring-boot-starter-web, spring-boot-starter-data-jpa, spring-boot-starter-security, spring-boot-starter-validation, and com.h2database:h2 (runtime).
+>
+>     Compiler: Set java.version to 25.
+>
+> 2. Java Application Logic (Java25BenchApp.java)
+>
+>     Enterprise Bloat: Create 10 dummy @Entity classes (DummyEntity1 to DummyEntity10) with an @Id to force Hibernate metadata scanning. Add a @Configuration class that defines a SecurityFilterChain bean.
+>
+>     Bean Structure (256-byte Alignment): Create a record RetentionBean with exactly 30 long fields (long v1 through long v30). Math: 12-byte header + 240 bytes = 252 bytes (padded to 256). Compact headers reduce this to 8-byte header + 240 bytes = 248 bytes. This guarantees exactly 8 bytes saved per object.
+>
+>     Dual-Phase Lifecycle: Use ApplicationListener<ApplicationReadyEvent> for data generation so that Spring's official "Started" timer only reflects the framework boot. In the generation loop, simulate "Heavy Hydration" by performing UUID.randomUUID() and BigDecimal calculations.
+>
+>     Signaling: Wrap the generation loop in a timer and print: DATA_GENERATION_TIME_MS=XXXX. Print DATA_GENERATION_COMPLETE when finished. Store beans in a private final List to ensure they are retained.
+>
+> 3. The Execution Script (run_benchmarks.sh)
+>
+>     Safety (Cleanup Trap): Include a cleanup() function using pkill -15 -f "java.*java25-bench", sleep 1, and pkill -9. Bind it to trap cleanup EXIT INT TERM.
+>
+>     Stability (Hardware Pinning): Prefix ALL java commands with taskset -c 0-7 to force execution on P-cores.
+>
+>     Logging: The log() function must write to standard error (>&2) to avoid leaking into result variables.
+>
+>     Measurement Methodology: Startup Time from Spring log. Gen Time from DATA_GENERATION_TIME_MS. Memory using jcmd $PID GC.class_histogram, parse Total bytes and convert to MB with bc. Do NOT use Serial GC.
+>
+>     Wait for Signal: Use while loop to wait until DATA_GENERATION_COMPLETE appears.
+>
+> 4. Reporting
+>
+>     Terminal Output: Print clean ASCII tables for 500,000 and 2,000,000 beans.
+>
+>     Relative Math: Display percentage memory saved and percentage boot speedup vs. the baseline.
+>
+>     Markdown Export: Automatically generate java25_benchmark_report.md with unified table: | Bean Count | Configuration | Boot Time (s) | Gen Time (s) | Heap (MB) | Heap Saved % | Boot Speedup % |.
